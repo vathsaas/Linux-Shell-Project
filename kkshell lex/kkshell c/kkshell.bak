@@ -1,0 +1,224 @@
+/*KKSHELL*/
+#define CMDLEN 50
+#define ARGLEN 25
+
+/*Header Files*/
+//#include<sys/types.h>
+//#include<sys/stat.h>
+#include<stdio.h>
+#include<time.h>
+#include<string.h>
+#include<dirent.h>
+//#include<sys/utsname.h>
+//#include<wait.h>
+#include<fcntl.h>
+#include<ctype.h>
+//#include<pwd.h>
+
+/*Global Variables*/
+char cmd[CMDLEN];
+
+/*FUNCTION DECLARATION*/
+void kexit();
+void klogin();
+void getcmd(char cmdname[]);
+void getargs(char arg1[ARGLEN],char arg2[ARGLEN]);
+void kdate();
+void kmd();
+void krd();
+void kren();
+void kcat();
+void kls();
+
+void main()
+{
+	char cmdname[10];
+	//klogin();
+	do
+	{
+	gets(cmd);
+	getcmd(cmdname);
+
+	/*if(strcmp(cmdname,"kls")==0)
+		kls();*/
+	if(strcmp(cmdname,"kren")==0)
+		kren();
+	else if(strcmp(cmdname,"kdate")==0)
+		kdate();/*
+	else if(strcmp(cmdname,"kcd")==0)
+		kcd();
+	else if(strcmp(cmdname,"khead")==0)
+		khead();
+	else if(strcmp(cmdname,"ktail")==0)
+		ktail(); */
+	else if(strcmp(cmdname,"kcat")==0)
+		kcat();/*
+	else if(strcmp(cmdname,"kclear")==0)
+		kclear();
+	*/else if(strcmp(cmdname,"kmd")==0)
+		kmd();
+	else if(strcmp(cmdname,"krd")==0)
+		krd();/*
+	else if(strcmp(cmdname,"kpwd")==0)
+		kpwd();
+	else if(strcmp(cmdname,"kwc")==0)
+		kwc();
+	else if(strcmp(cmdname,"kwhoami")==0)
+		kwhoami();
+	else if(strcmp(cmdname,"kuname")==0)
+		kuname();
+	else if(strcmp(cmdname,"kcp")==0)
+		kcp();
+	else if(strcmp(cmdname,"kman")==0)
+		kman();
+	else if(strcmp(cmdname,"about")==0)
+		kabout();*/
+	else if(strcmp(cmdname,"exit")==0)
+		kexit();
+	else if(cmdname[0]!='\0')
+		printf("\n\a\a\aKERROR:COMMAND NOT FOUND");
+	printf("\n[KKshell]@");
+	}while(strcmp(cmdname,"exit")!=0);
+	return;
+}
+
+/*Function to check login and password*/
+void klogin()
+{
+	char login[20];
+	char pass[20];
+	while(1)
+	{
+		printf("\nLogin Name:");
+		scanf("%s",login);
+		printf("Password:");
+		scanf("%s",pass);
+		if(strcmp(pass,"kkshell")==0)
+		{
+			printf("\nLOGIN SUCESSFULL\nWELCOME TO KKSHELL");
+			return;
+		}
+		else
+			printf("\n\a\a\aWRONG PASSWORD\nENTER AGAIN");
+	}
+}
+
+/*FUNCTION TO EXIT KKSHELL*/
+void kexit()
+{
+	printf("\nTERMINATING KKSHELL........");
+	exit(0);
+}
+
+/*FUNCTION TO GET THE COMMAND NO*/
+void getcmd(char cmdname[])
+{
+	int i;
+	for(i=0;cmd[i]!=' ' && cmd[i]!='\0';i++)
+		cmdname[i]=cmd[i];
+		cmdname[i]=0;
+	return;
+}
+
+/*FUNCTION TO GET ARGUMENTS*/
+void getargs(char arg1[ARGLEN],char arg2[ARGLEN])
+{
+	int i,k;
+	for(i=0;cmd[i]!=' ' && cmd[i]!='\0';i++);
+		i++;
+	for(k=0;cmd[i]!=' ' && cmd[i]!='\0';i++,k++)
+		arg1[k]=cmd[i];
+	arg1[k]=0;i++;
+	for(k=0;cmd[i]!=' ' && cmd[i]!='\0';i++,k++)
+		arg2[k]=cmd[i];
+	arg2[k]=0;
+	return;
+}
+
+/*FUNCTION TO DISPLAY DATE AND TIME*/
+void kdate()
+{
+	time_t tvar=time(0);
+	printf("\n%s",ctime(&tvar));
+	return;
+}
+
+/*FUNCTION TO CREATE NEW DIRECTORY*/
+void kmd()
+{
+	char dirname[10];
+	getargs(dirname,0);
+	if(mkdir(dirname,000)!=0)
+		printf("\n\a\a\aKERROR:UNABLE TO CREATE DIRECTORY");
+	else
+		printf("\nDIRECTORY CREATED SUCCESSFULLY");
+	return;
+}
+
+/*FUNCTION TO DELETE DIRECTORY*/
+void krd()
+{
+	char dirname[10];
+	getargs(dirname,0);
+	if(rmdir(dirname)!=0)
+		printf("\n\a\a\aKERROR:DIRECTORY NOT FOUND");
+	else
+		printf("\nDIRECTORY DELETED SUCCESSFULLY");
+	return;
+}
+
+/*FUNCTION TO RENAME DIRECTORY AND FILES*/
+void kren()
+{
+	char fd1[ARGLEN],fd2[ARGLEN];
+	getargs(fd1,fd2);
+	if(rename(fd1,fd2)!=0)
+		printf("\n\a\a\aKERROR:UNABLE TO RENAME");
+	else
+		printf("\nRENAMED SUCCESSFULLY");
+	return;
+}
+
+/*FUNCTION TO DISPLAY CONTENTS OF A FILE*/
+void kcat()
+{
+	char file[ARGLEN],ch;
+	FILE *fp;
+	getargs(file,0);
+	if((fp=fopen(file,"r"))==NULL)
+		printf("\n\a\a\aKERROR:UNABLE TO OPEN FILE");
+	else
+	{
+		ch=fgetc(fp);
+		while(ch!=EOF)
+		{
+			printf("%c",ch);
+			ch=fgetc(fp);
+		}
+	}
+	return;
+}
+
+/*FUNCTION TO LIST ALL FILES AND DIRECTORIES*/
+void kls()
+{
+	DIR *dp;
+	Dirent *desc;
+	char dirname[ARGLEN];
+	int i;
+	getargs(dirname,0);
+	if(dirname=='\0')
+		strcpy(dirname,".");
+	if((dp=opendir(dirname))==NULL)
+		printf("\n\a\a\aKERROR:DIRECTORY DOES NOT EXIST");
+	else
+	{
+		printf("\nNO.\tNAME");
+		for(i=1;desc=readdir(dp);i++)
+		{
+			printf("\n%d.\t%s",i,desc->d_name);
+		}
+	}
+	return;
+}
+

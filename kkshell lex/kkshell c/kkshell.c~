@@ -1,0 +1,140 @@
+/*KKSHELL*/
+#define CMDLEN 30
+#define kls 1
+#define kdate 2
+#define kcd 3
+#define kcat 4
+#define kclear 5
+#define kmd 6
+#define krd 7
+#define kpwd 8
+#define kwc 9
+#define kwhoami 10
+#define kuname 11
+#define khead 12
+#define ktail 13
+#define kcp 14
+#define kren 15
+#define kman 16
+#define about 17
+#define exit 18
+
+/*Header Files*/
+#include<sys/types.h>
+#include<sys/stat.h>
+#include<stdio.h>
+#include<time.h>
+#include<string.h>
+#include<dirent.h>
+#include<sys/utsname.h>
+#include<wait.h>
+#include<fcntl.h>
+#include<ctype.h>
+#include<pwd.h>
+
+/*Global Variables*/
+char cmd[CMDLEN];
+
+/*FUNCTION DECLARATION*/
+void exitk();
+void logink();
+void getcmd(char cmdname);
+
+void main()
+{
+	char cmdname[10];	
+	logink();
+	do
+	{
+	printf("\n[KKshell]@");
+	gets(cmd);
+	getcmd(cmdname);
+	/*switch()
+	{
+	case 1:lsk();
+		break;
+	case 2:datek();
+		break;
+	case 3:cdk();
+		break;
+	case 4:catk();
+		break;
+	case 5:cleark();
+		break;
+	case 6:mdk();
+		break;
+	case 7:rdk();
+		break;
+	case 8:pwdk();
+		break;
+	case 9:wck();
+		break;
+	case 10:whoamik();
+		break;
+	case 11:unamek();
+		break;
+	case 12:headk();
+		break;
+	case 13:tailk();
+		break;
+	case 14:cpk();
+		break;
+	case 15:renk();
+		break;
+	case 16:mank();
+		break;
+	case 17:aboutk();
+		break;
+	case 18:exitk();
+		break;
+	default:printf("\n\a\a\aCOMMAND NOT FOUND");
+	}
+	}while(strcmp(cmdname,"exit")!=0);*/
+	return;
+}
+
+/*Function to check login and password*/
+void logink()
+{
+	char login[20];
+	char pass[20];
+	while(1)
+	{
+		printf("\nLogin Name:");
+		scanf("%s",login);
+		printf("Password:");
+		gets(pass);
+		if(strcmp(pass,"kkshell")==0)
+		{
+			printf("\nLOGIN SUCESSFULL\nWELCOME TO KKSHELL");
+			return;
+		}
+		else
+			printf("\n\a\a\aWRONG PASSWORD\nENTER AGAIN"); 
+	}
+	return;
+}
+
+/*FUNCTION TO EXIT KKSHELL*/
+void exitk()
+{
+	print("\nTERMINATING KKSHELL........");
+	exit(0);
+}
+
+/*FUNCTION TO GET THE COMMAND NO*/
+void getcmd(char cmdname[])
+{
+	int i;
+	for(i=0;cmd[i]!=' ' && cmd[i]!='\0';i++)
+		cmdname[i]=cmd[i];
+		cmdname[i]=0;
+	printf("THis is command %s",cmdname);
+	return;
+}
+	
+	
+	
+
+
+
